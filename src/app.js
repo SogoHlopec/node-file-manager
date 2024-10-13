@@ -16,43 +16,69 @@ class app {
     }
 
     getMessage(action) {
-        switch (action) {
-            case 'hello':
-                console.log(`Welcome to the File Manager, ${this.userName}!`);
-                break;
-            case 'workingPath':
-                console.log(`You are currently in ${this.workingPath}`);
-                break;
-
-            default:
-                break;
+        try {
+            switch (action) {
+                case 'hello':
+                    console.log(
+                        `Welcome to the File Manager, ${this.userName}!`
+                    );
+                    break;
+                case 'working path':
+                    console.log(`You are currently in ${this.workingPath}`);
+                    break;
+                case 'invalid input':
+                    console.log(`Invalid input`);
+                    break;
+                default:
+                    break;
+            }
+        } catch (error) {
+            throw new Error(error);
         }
     }
 
     setPrompt() {
-        this.readLine.setPrompt('Enter the command:\n');
-        this.readLine.prompt();
+        try {
+            this.readLine.setPrompt('Enter the command:\n');
+            this.readLine.prompt();
+        } catch (error) {
+            throw new Error(error);
+        }
     }
 
     closeApp() {
-        this.readLine.on('close', () => {
-            console.log(
-                `Thank you for using File Manager, ${this.userName}, goodbye!`
-            );
-        });
+        try {
+            this.readLine.on('close', () => {
+                console.log(
+                    `Thank you for using File Manager, ${this.userName}, goodbye!`
+                );
+            });
+        } catch (error) {
+            throw new Error(error);
+        }
     }
 
     async start() {
-        this.getMessage('hello');
-        this.getMessage('workingPath');
-        this.setPrompt();
+        try {
+            this.getMessage('hello');
+            this.getMessage('workingPath');
+            this.setPrompt();
 
-        this.readLine.on('line', (line) => {
-            if (line === '.exit') {
-                this.readLine.close();
-            }
-        });
-        this.closeApp();
+            this.readLine.on('line', (line) => {
+                switch (line) {
+                    case '.exit':
+                        this.readLine.close();
+                        break;
+
+                    default:
+                        this.getMessage('invalid input');
+                        break;
+                }
+            });
+            this.closeApp();
+        } catch (error) {
+            throw new Error(error);
+        }
     }
 }
 
