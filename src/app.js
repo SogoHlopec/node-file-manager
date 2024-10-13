@@ -51,13 +51,17 @@ class app {
     }
 
     up() {
-        if (this.workingPath !== this.rootPath) {
-            this.workingPath = dirname(String(this.workingPath));
-            this.getMessage('working path');
-            this.readLine.prompt();
-        } else {
-            this.getMessage('working path');
-            this.readLine.prompt();
+        try {
+            if (this.workingPath !== this.rootPath) {
+                this.workingPath = dirname(String(this.workingPath));
+                this.getMessage('working path');
+                this.readLine.prompt();
+            } else {
+                this.getMessage('working path');
+                this.readLine.prompt();
+            }
+        } catch (error) {
+            console.log('Operation failed');
         }
     }
 
