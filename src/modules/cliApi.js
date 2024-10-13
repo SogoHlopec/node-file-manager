@@ -14,7 +14,7 @@ const setUserName = () => {
         });
         return userName;
     } catch (error) {
-        throw error;
+        return undefined;
     }
 };
 
