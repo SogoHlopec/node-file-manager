@@ -1,7 +1,7 @@
-import { FileManager } from "./app.js";
+import { app } from "./app.js";
 
 console.log('start index.js');
 
-const app = new FileManager();
+const appFileManager = new app();
 
-app.start();
+appFileManager.start();
