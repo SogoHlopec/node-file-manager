@@ -1,3 +1,4 @@
+import { dirname } from 'node:path';
 import { stdin, stdout } from 'node:process';
 import { createInterface } from 'node:readline/promises';
 import { setUserName } from './modules/cliApi.js';
@@ -26,10 +27,11 @@ class app {
                     );
                     break;
                 case 'working path':
-                    console.log(`You are currently in ${this.workingPath} - ${this.rootPath}`);
+                    console.log(`You are currently in ${this.workingPath}`);
                     break;
                 case 'invalid input':
                     console.log(`Invalid input`);
+                    this.setPrompt();
                     break;
                 default:
                     break;
@@ -45,6 +47,17 @@ class app {
             this.readLine.prompt();
         } catch (error) {
             throw new Error(error);
+        }
+    }
+
+    up() {
+        if (this.workingPath !== this.rootPath) {
+            this.workingPath = dirname(String(this.workingPath));
+            this.getMessage('working path');
+            this.readLine.prompt();
+        } else {
+            this.getMessage('working path');
+            this.readLine.prompt();
         }
     }
 
@@ -71,7 +84,9 @@ class app {
                     case '.exit':
                         this.readLine.close();
                         break;
-
+                    case 'up':
+                        this.up();
+                        break;
                     default:
                         this.getMessage('invalid input');
                         break;

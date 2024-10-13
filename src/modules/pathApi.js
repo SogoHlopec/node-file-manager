@@ -1,8 +1,12 @@
 import { parse } from 'node:path';
 
 const setRootPath = (path) => {
-    const rootPath = parse(String(path)).root;
-    return rootPath;
+    try {
+        const rootPath = parse(String(path)).root;
+        return rootPath;
+    } catch (error) {
+        throw new Error(error);
+    }
 };
 
 export { setRootPath };
