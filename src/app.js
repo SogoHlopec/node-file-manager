@@ -2,11 +2,13 @@ import { stdin, stdout } from 'node:process';
 import { createInterface } from 'node:readline/promises';
 import { setUserName } from './modules/cliApi.js';
 import { setHomeDir } from './modules/osApi.js';
+import { setRootPath } from './modules/pathApi.js';
 
 class app {
     constructor() {
         this.userName = setUserName();
         this.homeDir = setHomeDir();
+        this.rootPath = setRootPath(this.homeDir);
         this.workingPath = this.homeDir;
 
         this.readLine = createInterface({
@@ -24,7 +26,7 @@ class app {
                     );
                     break;
                 case 'working path':
-                    console.log(`You are currently in ${this.workingPath}`);
+                    console.log(`You are currently in ${this.workingPath} - ${this.rootPath}`);
                     break;
                 case 'invalid input':
                     console.log(`Invalid input`);
@@ -61,7 +63,7 @@ class app {
     async start() {
         try {
             this.getMessage('hello');
-            this.getMessage('workingPath');
+            this.getMessage('working path');
             this.setPrompt();
 
             this.readLine.on('line', (line) => {
