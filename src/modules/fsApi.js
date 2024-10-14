@@ -118,6 +118,15 @@ const deleteFile = async (path, workingPath) => {
     }
 };
 
+const moveFile = async (filePath, newDirectoryPath, workingPath) => {
+    try {
+        await copyFile(filePath, newDirectoryPath, workingPath);
+        await deleteFile(filePath, workingPath);
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+
 export {
     setRootPath,
     getFullPath,
@@ -127,4 +136,5 @@ export {
     renameFile,
     copyFile,
     deleteFile,
+    moveFile,
 };

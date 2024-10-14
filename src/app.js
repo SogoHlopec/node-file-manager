@@ -12,6 +12,7 @@ import {
     renameFile,
     copyFile,
     deleteFile,
+    moveFile,
 } from './modules/fsApi.js';
 
 class app {
@@ -177,6 +178,22 @@ class app {
         }
     }
 
+    async mv(args) {
+        try {
+            const argsSplit = args.split(' ');
+            const filePath = argsSplit[0];
+            const newDirectoryPath = argsSplit[1];
+
+            await moveFile(filePath, newDirectoryPath, this.workingPath);
+            this.getMessage('working path');
+            this.prompt();
+        } catch (error) {
+            console.log('Operation failed');
+            this.getMessage('working path');
+            this.prompt();
+        }
+    }
+
     closeApp() {
         try {
             this.readLine.on('close', () => {
@@ -256,6 +273,13 @@ class app {
                     case 'rm':
                         if (args) {
                             this.rm(args);
+                        } else {
+                            this.getMessage('invalid input');
+                        }
+                        break;
+                    case 'mv':
+                        if (args) {
+                            this.mv(args);
                         } else {
                             this.getMessage('invalid input');
                         }
