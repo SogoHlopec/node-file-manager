@@ -3,7 +3,12 @@ import { stdin, stdout } from 'node:process';
 import { createInterface } from 'node:readline/promises';
 import { setUserName } from './modules/cliApi.js';
 import { setHomeDir } from './modules/osApi.js';
-import { setRootPath, isExist, getListFiles } from './modules/fsApi.js';
+import {
+    setRootPath,
+    getFullPath,
+    getListFiles,
+    readFile,
+} from './modules/fsApi.js';
 
 class app {
     constructor() {
@@ -24,6 +29,11 @@ class app {
                 case 'hello':
                     console.log(
                         `Welcome to the File Manager, ${this.userName}!`
+                    );
+                    break;
+                case 'goodbye':
+                    console.log(
+                        `Thank you for using File Manager, ${this.userName}, goodbye!`
                     );
                     break;
                 case 'working path':
@@ -66,7 +76,7 @@ class app {
 
     async cd(path) {
         try {
-            const newPath = await isExist(path, this.workingPath);
+            const newPath = await getFullPath(path, this.workingPath);
             if (newPath) {
                 this.workingPath = newPath;
                 this.getMessage('working path');
@@ -92,12 +102,25 @@ class app {
         }
     }
 
+    async cat(path) {
+        try {
+            const readable = await readFile(path, this.workingPath);
+            readable.pipe(stdout);
+            readable.on('end', () => {
+                this.getMessage('working path');
+                this.prompt();
+            });
+        } catch (error) {
+            console.log('Operation failed');
+            this.getMessage('working path');
+            this.prompt();
+        }
+    }
+
     closeApp() {
         try {
             this.readLine.on('close', () => {
-                console.log(
-                    `Thank you for using File Manager, ${this.userName}, goodbye!`
-                );
+                this.getMessage('goodbye');
             });
         } catch (error) {
             throw new Error(error);
@@ -112,8 +135,10 @@ class app {
             this.prompt();
 
             this.readLine.on('line', (line) => {
-                const command = line.split(' ')[0];
-                const args = line.split(' ')[1];
+                const splitLine = line.split(' ');
+                const command = splitLine[0];
+                splitLine.shift();
+                let args = splitLine.join(' ');
 
                 switch (command) {
                     case '.exit':
@@ -136,6 +161,13 @@ class app {
                     case 'ls':
                         if (!args) {
                             this.ls();
+                        } else {
+                            this.getMessage('invalid input');
+                        }
+                        break;
+                    case 'cat':
+                        if (args) {
+                            this.cat(args);
                         } else {
                             this.getMessage('invalid input');
                         }

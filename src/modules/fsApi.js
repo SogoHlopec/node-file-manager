@@ -1,5 +1,7 @@
 import { parse, join, isAbsolute } from 'node:path';
 import { stat, readdir } from 'node:fs/promises';
+import { createReadStream } from 'node:fs';
+import { stdout } from 'node:process';
 
 const setRootPath = (path) => {
     try {
@@ -10,7 +12,7 @@ const setRootPath = (path) => {
     }
 };
 
-const isExist = async (path, workingPath) => {
+const getFullPath = async (path, workingPath) => {
     try {
         const newPath = isAbsolute(path) ? path : join(workingPath, path);
         await stat(newPath);
@@ -54,4 +56,14 @@ const getListFiles = async (path) => {
     }
 };
 
-export { setRootPath, isExist, getListFiles };
+const readFile = async (path, workingPath) => {
+    try {
+        const fullPath = await getFullPath(path, workingPath);
+        const readable = await createReadStream(fullPath);
+        return readable;
+        // readable.pipe(stdout);
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+export { setRootPath, getFullPath, getListFiles, readFile };
