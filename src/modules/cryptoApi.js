@@ -1,6 +1,6 @@
 import { createReadStream } from 'node:fs';
 import { createHash } from 'node:crypto';
-import { getFullPath } from './fsApi.js';
+import { getFullPath } from './getFullPath.js';
 
 const calculateHash = async (path, workingPath) => {
     try {

@@ -2,7 +2,7 @@ import { pipeline } from 'node:stream';
 import { join, isAbsolute } from 'node:path';
 import { createReadStream, createWriteStream } from 'node:fs';
 import { createBrotliCompress, createBrotliDecompress } from 'node:zlib';
-import { getFullPath } from './fsApi.js';
+import { getFullPath } from './getFullPath.js';
 
 const compressFile = async (path, newPath, workingPath) => {
     try {

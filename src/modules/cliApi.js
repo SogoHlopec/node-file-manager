@@ -1,6 +1,6 @@
 import * as process from 'node:process';
 
-const setUserName = () => {
+const getUserName = () => {
     try {
         let userName;
         const args = process.argv;
@@ -18,4 +18,4 @@ const setUserName = () => {
     }
 };
 
-export { setUserName };
+export { getUserName };

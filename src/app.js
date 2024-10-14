@@ -1,27 +1,26 @@
 import { dirname } from 'node:path';
 import { stdin, stdout } from 'node:process';
 import { createInterface } from 'node:readline/promises';
-import { setUserName } from './modules/cliApi.js';
+import { getUserName } from './modules/cliApi.js';
+import { getFullPath } from './modules/getFullPath.js';
 import { calculateHash } from './modules/cryptoApi.js';
 import { getHomeDir, getOsInfo } from './modules/osApi.js';
 import { compressFile, decompressFile } from './modules/zlibApi.js';
+import { getRootPath, getListFiles } from './modules/fsApi.js';
 import {
-    setRootPath,
-    getFullPath,
-    getListFiles,
     readFile,
     createFile,
     renameFile,
     copyFile,
     deleteFile,
     moveFile,
-} from './modules/fsApi.js';
+} from './modules/file.js';
 
 class app {
     constructor() {
-        this.userName = setUserName();
+        this.userName = getUserName();
         this.homeDir = String(getHomeDir());
-        this.rootPath = String(setRootPath(this.homeDir));
+        this.rootPath = String(getRootPath(this.homeDir));
         this.workingPath = this.homeDir;
 
         this.readLine = createInterface({
@@ -111,12 +110,10 @@ class app {
 
     async cat(path) {
         try {
-            const readable = await readFile(path, this.workingPath);
-            readable.pipe(stdout);
-            readable.on('end', () => {
-                this.getMessage('working path');
-                this.prompt();
-            });
+            const result = await readFile(path, this.workingPath);
+            console.log(result);
+            this.getMessage('working path');
+            this.prompt();
         } catch (error) {
             console.log('Operation failed');
             this.getMessage('working path');
@@ -240,7 +237,7 @@ class app {
             this.prompt();
         }
     }
-    
+
     async decompress(args) {
         try {
             const argsSplit = args.split(' ');
