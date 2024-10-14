@@ -2,6 +2,7 @@ import { dirname } from 'node:path';
 import { stdin, stdout } from 'node:process';
 import { createInterface } from 'node:readline/promises';
 import { setUserName } from './modules/cliApi.js';
+import { calculateHash } from './modules/cryptoApi.js';
 import { getHomeDir, getOsInfo } from './modules/osApi.js';
 import {
     setRootPath,
@@ -210,6 +211,19 @@ class app {
         }
     }
 
+    async hash(args) {
+        try {
+            const result = await calculateHash(args, this.workingPath);
+            console.log(result);
+            this.getMessage('working path');
+            this.prompt();
+        } catch (error) {
+            console.log('Operation failed');
+            this.getMessage('working path');
+            this.prompt();
+        }
+    }
+
     closeApp() {
         try {
             this.readLine.on('close', () => {
@@ -303,6 +317,13 @@ class app {
                     case 'os':
                         if (args) {
                             this.os(args);
+                        } else {
+                            this.getMessage('invalid input');
+                        }
+                        break;
+                    case 'hash':
+                        if (args) {
+                            this.hash(args);
                         } else {
                             this.getMessage('invalid input');
                         }
