@@ -3,7 +3,7 @@ import { stdin, stdout } from 'node:process';
 import { createInterface } from 'node:readline/promises';
 import { setUserName } from './modules/cliApi.js';
 import { setHomeDir } from './modules/osApi.js';
-import { setRootPath, isExist } from './modules/fsApi.js';
+import { setRootPath, isExist, getListFiles } from './modules/fsApi.js';
 
 class app {
     constructor() {
@@ -31,7 +31,8 @@ class app {
                     break;
                 case 'invalid input':
                     console.log(`Invalid input`);
-                    this.setPrompt();
+                    this.getMessage('working path');
+                    this.prompt();
                     break;
                 default:
                     break;
@@ -41,9 +42,8 @@ class app {
         }
     }
 
-    setPrompt() {
+    prompt() {
         try {
-            this.readLine.setPrompt('Enter the command:\n');
             this.readLine.prompt();
         } catch (error) {
             throw new Error(error);
@@ -56,19 +56,36 @@ class app {
                 this.workingPath = dirname(String(this.workingPath));
             }
             this.getMessage('working path');
-            this.readLine.prompt();
+            this.prompt();
         } catch (error) {
             console.log('Operation failed');
+            this.getMessage('working path');
+            this.prompt();
         }
     }
 
     async cd(path) {
         try {
-            this.workingPath = await isExist(path, this.workingPath);
-            this.getMessage('working path');
-            this.readLine.prompt();
+            const newPath = await isExist(path, this.workingPath);
+            if (newPath) {
+                this.workingPath = newPath;
+                this.getMessage('working path');
+                this.prompt();
+            }
         } catch (error) {
             console.log('Operation failed');
+            this.getMessage('working path');
+            this.prompt();
+        }
+    }
+
+    async ls() {
+        try {
+            await getListFiles(this.workingPath);
+        } catch (error) {
+            console.log('Operation failed');
+            this.getMessage('working path');
+            this.prompt();
         }
     }
 
@@ -88,7 +105,8 @@ class app {
         try {
             this.getMessage('hello');
             this.getMessage('working path');
-            this.setPrompt();
+            this.readLine.setPrompt('Enter the command:\n');
+            this.prompt();
 
             this.readLine.on('line', (line) => {
                 const command = line.split(' ')[0];
@@ -108,6 +126,13 @@ class app {
                     case 'cd':
                         if (args) {
                             this.cd(args);
+                        } else {
+                            this.getMessage('invalid input');
+                        }
+                        break;
+                    case 'ls':
+                        if (!args) {
+                            this.ls();
                         } else {
                             this.getMessage('invalid input');
                         }
