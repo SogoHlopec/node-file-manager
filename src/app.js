@@ -3,6 +3,7 @@ import { stdin, stdout } from 'node:process';
 import { createInterface } from 'node:readline/promises';
 import { setUserName } from './modules/cliApi.js';
 import { calculateHash } from './modules/cryptoApi.js';
+import { compressFile } from './modules/zlibApi.js';
 import { getHomeDir, getOsInfo } from './modules/osApi.js';
 import {
     setRootPath,
@@ -224,6 +225,22 @@ class app {
         }
     }
 
+    async compress(args) {
+        try {
+            const argsSplit = args.split(' ');
+            const filePath = argsSplit[0];
+            const newPath = argsSplit[1];
+
+            await compressFile(filePath, newPath, this.workingPath);
+            this.getMessage('working path');
+            this.prompt();
+        } catch (error) {
+            console.log('Operation failed');
+            this.getMessage('working path');
+            this.prompt();
+        }
+    }
+
     closeApp() {
         try {
             this.readLine.on('close', () => {
@@ -324,6 +341,13 @@ class app {
                     case 'hash':
                         if (args) {
                             this.hash(args);
+                        } else {
+                            this.getMessage('invalid input');
+                        }
+                        break;
+                    case 'compress':
+                        if (args) {
+                            this.compress(args);
                         } else {
                             this.getMessage('invalid input');
                         }
