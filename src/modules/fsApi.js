@@ -114,7 +114,6 @@ const deleteFile = async (path, workingPath) => {
         const fileFullPath = await getFullPath(path, workingPath);
         await unlink(fileFullPath);
     } catch (error) {
-        console.log(error);
         throw new Error(error);
     }
 };
