@@ -1,4 +1,4 @@
-import { homedir, EOL } from 'node:os';
+import { homedir, EOL, cpus } from 'node:os';
 
 const setHomeDir = () => {
     try {
@@ -8,16 +8,30 @@ const setHomeDir = () => {
     }
 };
 
+const getCpusInfo = (cpus) => {
+    try {
+        const result = [];
+        cpus.forEach((item) => {
+            result.push({
+                Model: item.model,
+                Speed: `${(item.speed / 1000).toFixed(2)} GHz`,
+            });
+        });
+        return result;
+    } catch (error) {}
+};
+
 const getOsInfo = async (args) => {
     try {
         switch (args) {
             case '--EOL':
                 console.log(JSON.stringify(EOL));
                 break;
-
-            default:
-                console.log(error);
+            case '--cpus':
+                console.table(getCpusInfo(cpus()));
                 break;
+            default:
+                return 'invalid input';
         }
     } catch (error) {
         throw new Error(error);

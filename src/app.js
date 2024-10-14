@@ -196,9 +196,13 @@ class app {
 
     async os(args) {
         try {
-            await getOsInfo(args);
-            this.getMessage('working path');
-            this.prompt();
+            const result = await getOsInfo(args);
+            if (result === 'invalid input') {
+                this.getMessage('invalid input');
+            } else {
+                this.getMessage('working path');
+                this.prompt();
+            }
         } catch (error) {
             console.log('Operation failed');
             this.getMessage('working path');
