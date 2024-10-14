@@ -3,7 +3,7 @@ import { stdin, stdout } from 'node:process';
 import { createInterface } from 'node:readline/promises';
 import { setUserName } from './modules/cliApi.js';
 import { setHomeDir } from './modules/osApi.js';
-import { setRootPath } from './modules/pathApi.js';
+import { setRootPath, isExist } from './modules/fsApi.js';
 
 class app {
     constructor() {
@@ -54,12 +54,19 @@ class app {
         try {
             if (this.workingPath !== this.rootPath) {
                 this.workingPath = dirname(String(this.workingPath));
-                this.getMessage('working path');
-                this.readLine.prompt();
-            } else {
-                this.getMessage('working path');
-                this.readLine.prompt();
             }
+            this.getMessage('working path');
+            this.readLine.prompt();
+        } catch (error) {
+            console.log('Operation failed');
+        }
+    }
+
+    async cd(path) {
+        try {
+            this.workingPath = await isExist(path, this.workingPath);
+            this.getMessage('working path');
+            this.readLine.prompt();
         } catch (error) {
             console.log('Operation failed');
         }
@@ -84,12 +91,26 @@ class app {
             this.setPrompt();
 
             this.readLine.on('line', (line) => {
-                switch (line) {
+                const command = line.split(' ')[0];
+                const args = line.split(' ')[1];
+
+                switch (command) {
                     case '.exit':
                         this.readLine.close();
                         break;
                     case 'up':
-                        this.up();
+                        if (!args) {
+                            this.up();
+                        } else {
+                            this.getMessage('invalid input');
+                        }
+                        break;
+                    case 'cd':
+                        if (args) {
+                            this.cd(args);
+                        } else {
+                            this.getMessage('invalid input');
+                        }
                         break;
                     default:
                         this.getMessage('invalid input');
