@@ -9,6 +9,7 @@ import {
     getListFiles,
     readFile,
     createFile,
+    renameFile,
 } from './modules/fsApi.js';
 
 class app {
@@ -130,6 +131,22 @@ class app {
         }
     }
 
+    async rn(args) {
+        try {
+            const argsSplit = args.split(' ');
+            const filePath = argsSplit[0];
+            const newFileName = argsSplit[1];
+
+            await renameFile(filePath, newFileName);
+            this.getMessage('working path');
+            this.prompt();
+        } catch (error) {
+            console.log('Operation failed');
+            this.getMessage('working path');
+            this.prompt();
+        }
+    }
+
     closeApp() {
         try {
             this.readLine.on('close', () => {
@@ -188,6 +205,13 @@ class app {
                     case 'add':
                         if (args) {
                             this.add(args);
+                        } else {
+                            this.getMessage('invalid input');
+                        }
+                        break;
+                    case 'rn':
+                        if (args) {
+                            this.rn(args);
                         } else {
                             this.getMessage('invalid input');
                         }
