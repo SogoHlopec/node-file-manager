@@ -8,8 +8,8 @@ import { setRootPath, isExist, getListFiles } from './modules/fsApi.js';
 class app {
     constructor() {
         this.userName = setUserName();
-        this.homeDir = setHomeDir();
-        this.rootPath = setRootPath(this.homeDir);
+        this.homeDir = String(setHomeDir());
+        this.rootPath = String(setRootPath(this.homeDir));
         this.workingPath = this.homeDir;
 
         this.readLine = createInterface({
@@ -53,7 +53,7 @@ class app {
     up() {
         try {
             if (this.workingPath !== this.rootPath) {
-                this.workingPath = dirname(String(this.workingPath));
+                this.workingPath = dirname(this.workingPath);
             }
             this.getMessage('working path');
             this.prompt();
@@ -81,7 +81,10 @@ class app {
 
     async ls() {
         try {
-            await getListFiles(this.workingPath);
+            const output = await getListFiles(this.workingPath);
+            console.table(output);
+            this.getMessage('working path');
+            this.prompt();
         } catch (error) {
             console.log('Operation failed');
             this.getMessage('working path');
