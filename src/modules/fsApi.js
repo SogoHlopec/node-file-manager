@@ -5,6 +5,7 @@ import {
     writeFile,
     rename,
     copyFile as fsCopyFile,
+    unlink,
 } from 'node:fs/promises';
 import { createReadStream, createWriteStream } from 'node:fs';
 
@@ -108,6 +109,16 @@ const copyFile = async (filePath, newDirectoryPath, workingPath) => {
     }
 };
 
+const deleteFile = async (path, workingPath) => {
+    try {
+        const fileFullPath = await getFullPath(path, workingPath);
+        await unlink(fileFullPath);
+    } catch (error) {
+        console.log(error);
+        throw new Error(error);
+    }
+};
+
 export {
     setRootPath,
     getFullPath,
@@ -116,4 +127,5 @@ export {
     createFile,
     renameFile,
     copyFile,
+    deleteFile,
 };

@@ -11,6 +11,7 @@ import {
     createFile,
     renameFile,
     copyFile,
+    deleteFile,
 } from './modules/fsApi.js';
 
 class app {
@@ -164,6 +165,18 @@ class app {
         }
     }
 
+    async rm(args) {
+        try {
+            await deleteFile(args, this.workingPath);
+            this.getMessage('working path');
+            this.prompt();
+        } catch (error) {
+            console.log('Operation failed');
+            this.getMessage('working path');
+            this.prompt();
+        }
+    }
+
     closeApp() {
         try {
             this.readLine.on('close', () => {
@@ -236,6 +249,13 @@ class app {
                     case 'cp':
                         if (args) {
                             this.cp(args);
+                        } else {
+                            this.getMessage('invalid input');
+                        }
+                        break;
+                    case 'rm':
+                        if (args) {
+                            this.rm(args);
                         } else {
                             this.getMessage('invalid input');
                         }
