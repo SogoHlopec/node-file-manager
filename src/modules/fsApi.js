@@ -1,7 +1,6 @@
 import { parse, join, isAbsolute } from 'node:path';
-import { stat, readdir } from 'node:fs/promises';
+import { stat, readdir, writeFile } from 'node:fs/promises';
 import { createReadStream } from 'node:fs';
-import { stdout } from 'node:process';
 
 const setRootPath = (path) => {
     try {
@@ -61,9 +60,19 @@ const readFile = async (path, workingPath) => {
         const fullPath = await getFullPath(path, workingPath);
         const readable = await createReadStream(fullPath);
         return readable;
-        // readable.pipe(stdout);
     } catch (error) {
         throw new Error(error);
     }
 };
-export { setRootPath, getFullPath, getListFiles, readFile };
+
+const createFile = async (path, workingPath) => {
+    try {
+        const fullPath = join(workingPath, path);
+        await writeFile(fullPath, '', {
+            flag: 'wx',
+        });
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+export { setRootPath, getFullPath, getListFiles, readFile, createFile };
