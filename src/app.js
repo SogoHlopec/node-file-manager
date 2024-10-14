@@ -10,6 +10,7 @@ import {
     readFile,
     createFile,
     renameFile,
+    copyFile,
 } from './modules/fsApi.js';
 
 class app {
@@ -147,6 +148,22 @@ class app {
         }
     }
 
+    async cp(args) {
+        try {
+            const argsSplit = args.split(' ');
+            const filePath = argsSplit[0];
+            const newDirectoryPath = argsSplit[1];
+
+            await copyFile(filePath, newDirectoryPath, this.workingPath);
+            this.getMessage('working path');
+            this.prompt();
+        } catch (error) {
+            console.log('Operation failed');
+            this.getMessage('working path');
+            this.prompt();
+        }
+    }
+
     closeApp() {
         try {
             this.readLine.on('close', () => {
@@ -212,6 +229,13 @@ class app {
                     case 'rn':
                         if (args) {
                             this.rn(args);
+                        } else {
+                            this.getMessage('invalid input');
+                        }
+                        break;
+                    case 'cp':
+                        if (args) {
+                            this.cp(args);
                         } else {
                             this.getMessage('invalid input');
                         }

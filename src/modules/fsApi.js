@@ -1,6 +1,12 @@
-import { parse, join, isAbsolute } from 'node:path';
-import { stat, readdir, writeFile, rename } from 'node:fs/promises';
-import { createReadStream } from 'node:fs';
+import { parse, join, isAbsolute, basename } from 'node:path';
+import {
+    stat,
+    readdir,
+    writeFile,
+    rename,
+    copyFile as fsCopyFile,
+} from 'node:fs/promises';
+import { createReadStream, createWriteStream } from 'node:fs';
 
 const setRootPath = (path) => {
     try {
@@ -80,8 +86,24 @@ const renameFile = async (filePath, newFileName) => {
     try {
         await rename(filePath, newFileName);
     } catch (error) {
-        console.log(error);
-        
+        throw new Error(error);
+    }
+};
+
+const copyFile = async (filePath, newDirectoryPath, workingPath) => {
+    try {
+        const fileFullPath = await getFullPath(filePath, workingPath);
+        const directoryFullPath = await getFullPath(
+            newDirectoryPath,
+            workingPath
+        );
+        const fileName = basename(fileFullPath);
+        const newFilePath = join(directoryFullPath, fileName);
+
+        const readable = createReadStream(fileFullPath);
+        const writable = createWriteStream(newFilePath);
+        readable.pipe(writable);
+    } catch (error) {
         throw new Error(error);
     }
 };
@@ -93,4 +115,5 @@ export {
     readFile,
     createFile,
     renameFile,
+    copyFile,
 };
