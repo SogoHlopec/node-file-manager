@@ -1,4 +1,4 @@
-import { homedir, EOL, cpus } from 'node:os';
+import { homedir, EOL, cpus, userInfo } from 'node:os';
 
 const getHomeDir = () => {
     try {
@@ -32,6 +32,9 @@ const getOsInfo = async (args) => {
                 break;
             case '--homedir':
                 console.log(String(getHomeDir()));
+                break;
+            case '--username':
+                console.log(userInfo().username);
                 break;
             default:
                 return 'invalid input';
