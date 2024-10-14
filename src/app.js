@@ -3,8 +3,8 @@ import { stdin, stdout } from 'node:process';
 import { createInterface } from 'node:readline/promises';
 import { setUserName } from './modules/cliApi.js';
 import { calculateHash } from './modules/cryptoApi.js';
-import { compressFile } from './modules/zlibApi.js';
 import { getHomeDir, getOsInfo } from './modules/osApi.js';
+import { compressFile, decompressFile } from './modules/zlibApi.js';
 import {
     setRootPath,
     getFullPath,
@@ -240,6 +240,22 @@ class app {
             this.prompt();
         }
     }
+    
+    async decompress(args) {
+        try {
+            const argsSplit = args.split(' ');
+            const filePath = argsSplit[0];
+            const newPath = argsSplit[1];
+
+            await decompressFile(filePath, newPath, this.workingPath);
+            this.getMessage('working path');
+            this.prompt();
+        } catch (error) {
+            console.log('Operation failed');
+            this.getMessage('working path');
+            this.prompt();
+        }
+    }
 
     closeApp() {
         try {
@@ -348,6 +364,13 @@ class app {
                     case 'compress':
                         if (args) {
                             this.compress(args);
+                        } else {
+                            this.getMessage('invalid input');
+                        }
+                        break;
+                    case 'decompress':
+                        if (args) {
+                            this.decompress(args);
                         } else {
                             this.getMessage('invalid input');
                         }
