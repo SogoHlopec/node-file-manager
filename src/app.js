@@ -2,7 +2,7 @@ import { dirname } from 'node:path';
 import { stdin, stdout } from 'node:process';
 import { createInterface } from 'node:readline/promises';
 import { setUserName } from './modules/cliApi.js';
-import { setHomeDir } from './modules/osApi.js';
+import { setHomeDir, getOsInfo } from './modules/osApi.js';
 import {
     setRootPath,
     getFullPath,
@@ -194,6 +194,18 @@ class app {
         }
     }
 
+    async os(args) {
+        try {
+            await getOsInfo(args);
+            this.getMessage('working path');
+            this.prompt();
+        } catch (error) {
+            console.log('Operation failed');
+            this.getMessage('working path');
+            this.prompt();
+        }
+    }
+
     closeApp() {
         try {
             this.readLine.on('close', () => {
@@ -280,6 +292,13 @@ class app {
                     case 'mv':
                         if (args) {
                             this.mv(args);
+                        } else {
+                            this.getMessage('invalid input');
+                        }
+                        break;
+                    case 'os':
+                        if (args) {
+                            this.os(args);
                         } else {
                             this.getMessage('invalid input');
                         }

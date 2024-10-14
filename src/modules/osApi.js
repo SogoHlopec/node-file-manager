@@ -1,4 +1,4 @@
-import { homedir } from 'node:os';
+import { homedir, EOL } from 'node:os';
 
 const setHomeDir = () => {
     try {
@@ -8,4 +8,20 @@ const setHomeDir = () => {
     }
 };
 
-export { setHomeDir };
+const getOsInfo = async (args) => {
+    try {
+        switch (args) {
+            case '--EOL':
+                console.log(JSON.stringify(EOL));
+                break;
+
+            default:
+                console.log(error);
+                break;
+        }
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+
+export { setHomeDir, getOsInfo };
