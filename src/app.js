@@ -2,7 +2,7 @@ import { dirname } from 'node:path';
 import { stdin, stdout } from 'node:process';
 import { createInterface } from 'node:readline/promises';
 import { setUserName } from './modules/cliApi.js';
-import { setHomeDir, getOsInfo } from './modules/osApi.js';
+import { getHomeDir, getOsInfo } from './modules/osApi.js';
 import {
     setRootPath,
     getFullPath,
@@ -18,7 +18,7 @@ import {
 class app {
     constructor() {
         this.userName = setUserName();
-        this.homeDir = String(setHomeDir());
+        this.homeDir = String(getHomeDir());
         this.rootPath = String(setRootPath(this.homeDir));
         this.workingPath = this.homeDir;
 
