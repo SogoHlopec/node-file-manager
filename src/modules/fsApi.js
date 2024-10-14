@@ -4,7 +4,6 @@ import {
     readdir,
     writeFile,
     rename,
-    copyFile as fsCopyFile,
     unlink,
 } from 'node:fs/promises';
 import { createReadStream, createWriteStream } from 'node:fs';
